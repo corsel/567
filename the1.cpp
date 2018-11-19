@@ -1,18 +1,25 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <set>
 #include <fstream>
 #include <iostream>
 
 const char* INPUT_FILE = "./the1.inp";
 const unsigned int MAX_LINE_SIZE = 20;
 
-template<>
-bool std::less<SkylineElem>(SkylineElem const& arg0, SkylineElem const& arg1)
+struct SkylineElem
 {
-  return (arg0.start < arg1.start);
-}
-
+  unsigned int start;
+  unsigned int height;  
+  
+  SkylineElem(unsigned int start, unsigned int height)
+  : start(start), height(height) {}
+  bool operator<(SkylineElem const& other) const
+  {
+    return (other.start > this->start);
+  }
+};
 struct BuildingElem
 {
   unsigned int start;
@@ -22,21 +29,13 @@ struct BuildingElem
   BuildingElem(unsigned int start, unsigned int height, unsigned int end)
   : start(start), height(height), end(end) {}
 };
-struct SkylineElem
-{
-  unsigned int start;
-  unsigned int height;  
-  
-  SkylineElem(unsigned int start, unsigned int height)
-  : start(start), height(height) {}
-};
 typedef std::vector<BuildingElem> BuildingVectorType;
 typedef std::set<SkylineElem> SkylineSetType;
 
 
 void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
 {
-  BuildingElem firstBuilding = buildingVector.begin();
+  BuildingElem firstBuilding = buildingVector.front();
   outSkylineSet.insert(SkylineElem(firstBuilding.start, firstBuilding.height));
   outSkylineSet.insert(SkylineElem(firstBuilding.start, 0));
 
@@ -52,7 +51,7 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
   }
 }
 
-void algo1(BuildingVectorType buildingVector, SkylineVectorType& outSkylineVector)
+void algo1(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
 {
   
 }
@@ -94,11 +93,11 @@ int main(int argc, char* argv[])
 
   readFile(INPUT_FILE, buildingVector, algoType);
 
-  SkylineVectorType skylineVector;
+  SkylineSetType skylineSet;
   if (algoType == 0)
-    algo0(buildingVector, skylineVector);
+    algo0(buildingVector, skylineSet);
   else if (algoType == 1)
-    algo1(buildingVector, skylineVector);
+    algo1(buildingVector, skylineSet);
   else
     abort();
   
