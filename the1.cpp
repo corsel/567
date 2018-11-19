@@ -11,7 +11,7 @@ const unsigned int MAX_LINE_SIZE = 20;
 struct SkylineElem
 {
   unsigned int start;
-  unsigned int height;  
+  mutable unsigned int height;  
   
   SkylineElem(unsigned int start, unsigned int height)
   : start(start), height(height) {}
@@ -43,10 +43,31 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
     bIter != buildingVector.end();
     bIter++)
   {
+    unsigned int currHeight = 0;
+    bool flag = false;
     for (SkylineSetType::iterator sIter = outSkylineSet.begin();
       sIter != outSkylineSet.end();
       sIter++)
     {
+      if (sIter->start > bIter->start && !flag)
+      {
+        if (bIter->height > currHeight)
+          outSkylineSet.insert(SkylineElem(bIter->start, bIter->height));
+        flag = true;
+      }
+      else if (bIter->end <= sIter->start && flag)
+      {
+        SkylineSetType::iterator tempIter = sIter;
+        tempIter--;
+        if (bIter->height > tempIter->height)
+          outSkylineSet.insert(SkylineElem(bIter->end, sIter->height));
+        flag = false;
+      }
+      else if (bIter->height > sIter->height && flag)
+      {
+        sIter->height = bIter->height;
+      }
+      currHeight = sIter->height;
     }
   }
 }
@@ -100,6 +121,13 @@ int main(int argc, char* argv[])
     algo1(buildingVector, skylineSet);
   else
     abort();
+
+  for (SkylineSetType::const_iterator iter = skylineSet.begin(); 
+    iter != skylineSet.end();
+    iter++)
+  {
+    std::cout << iter->start << " " << iter->height << std::endl;
+  }
   
   return 0;
 }
