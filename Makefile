@@ -1,4 +1,4 @@
 .DEFAULT=main
 
-main: main.c
-	gcc -o main main.c 
+main: the1.cpp
+	g++ -g -o out the1.cpp
