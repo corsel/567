@@ -32,6 +32,18 @@ struct BuildingElem
 typedef std::vector<BuildingElem> BuildingVectorType;
 typedef std::set<SkylineElem> SkylineSetType;
 
+void cleanDuplicates(SkylineSetType& skylineSet)
+{
+  for (SkylineSetType::iterator iter = skylineSet.begin(); iter != skylineSet.end();)
+  {
+    SkylineSetType::iterator next = std::next(iter);
+    if (next == skylineSet.end()) break;
+    if (next->height == iter->height)
+      skylineSet.erase(next);
+    else
+      iter++;
+  }
+}
 
 void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
 {
@@ -169,6 +181,8 @@ int main(int argc, char* argv[])
     algo1(buildingVector, skylineSet);
   else
     abort();
+
+  cleanDuplicates(skylineSet);
 
   for (SkylineSetType::const_iterator iter = skylineSet.begin(); 
     iter != skylineSet.end();
