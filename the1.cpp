@@ -35,7 +35,14 @@ typedef std::set<SkylineElem> SkylineSetType;
 
 void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
 {
-  for (BuildingVectorType::iterator bIter = buildingVector.begin();
+  // Insert the first block manually.
+  BuildingVectorType::const_iterator first = buildingVector.begin();
+  if (first == buildingVector.end()) return;
+  outSkylineSet.insert(SkylineElem(first->start, first->height));
+  outSkylineSet.insert(SkylineElem(first->end, 0));
+
+  // Iterate through blocks.
+  for (BuildingVectorType::iterator bIter = buildingVector.begin() + 1;
     bIter != buildingVector.end();
     bIter++)
   {
@@ -50,10 +57,10 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
       if (next == outSkylineSet.end())
       {
         if (!flag)
-          outSkyline.insert(SkylineElem(bIter->start, bIter->height);
+          outSkylineSet.insert(SkylineElem(bIter->start, bIter->height));
         else
           sIter->height = bIter->height;
-        outSkyline.insert(SkylineElem(bIter->end, 0);
+        outSkylineSet.insert(SkylineElem(bIter->end, 0));
         break;
       }
 
@@ -62,20 +69,32 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
         continue;
 
       // Starting point of block is after this critical point.
-      if (flag) goto pass;
       unsigned int maxHeight = bIter->height > sIter->height ? bIter->height : sIter->height;
-      if (bIter->start > sIter->start)
+      if (!flag)
       {
-        outSkyline.insert(SkylineElem(bIter->start, maxHeight);
+        if (bIter->start > sIter->start)
+        {
+          outSkylineSet.insert(SkylineElem(bIter->start, maxHeight));
+        }
+        if (bIter->start == sIter->start)
+        {
+          sIter->height = maxHeight;
+        }
+        flag = true;
       }
-      if (bIter->start == sIter->start)
+      // Block insertion is in progress.
+      else
       {
         sIter->height = maxHeight;
-      }
-      flag = true;
-      pass:
 
-      
+        // Block ends after this critical point.
+        if (bIter->end < next->start)
+        {
+          outSkylineSet.insert(SkylineElem(bIter->end, next->height));
+          break;
+        }
+      }
+
       /*
       if (sIter->start > bIter->start && !flag)
       {
