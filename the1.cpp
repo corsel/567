@@ -35,20 +35,48 @@ typedef std::set<SkylineElem> SkylineSetType;
 
 void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
 {
-  BuildingElem firstBuilding = buildingVector.front();
-  outSkylineSet.insert(SkylineElem(firstBuilding.start, firstBuilding.height));
-  outSkylineSet.insert(SkylineElem(firstBuilding.start, 0));
-
-  for (BuildingVectorType::iterator bIter = buildingVector.begin() + 1;
+  for (BuildingVectorType::iterator bIter = buildingVector.begin();
     bIter != buildingVector.end();
     bIter++)
   {
-    unsigned int currHeight = 0;
     bool flag = false;
     for (SkylineSetType::iterator sIter = outSkylineSet.begin();
       sIter != outSkylineSet.end();
       sIter++)
     {
+      SkylineSetType::iterator next = std::next(sIter);
+
+      // Block is past the last critical point.
+      if (next == outSkylineSet.end())
+      {
+        if (!flag)
+          outSkyline.insert(SkylineElem(bIter->start, bIter->height);
+        else
+          sIter->height = bIter->height;
+        outSkyline.insert(SkylineElem(bIter->end, 0);
+        break;
+      }
+
+      // We have not reached the starting point yet. 
+      if (bIter->start >= next->start)
+        continue;
+
+      // Starting point of block is after this critical point.
+      if (flag) goto pass;
+      unsigned int maxHeight = bIter->height > sIter->height ? bIter->height : sIter->height;
+      if (bIter->start > sIter->start)
+      {
+        outSkyline.insert(SkylineElem(bIter->start, maxHeight);
+      }
+      if (bIter->start == sIter->start)
+      {
+        sIter->height = maxHeight;
+      }
+      flag = true;
+      pass:
+
+      
+      /*
       if (sIter->start > bIter->start && !flag)
       {
         if (bIter->height > currHeight)
@@ -68,6 +96,7 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
         sIter->height = bIter->height;
       }
       currHeight = sIter->height;
+      */
     }
   }
 }
