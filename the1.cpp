@@ -1,4 +1,5 @@
-#include <cstdlib>
+// Cem Orsel, 2018
+
 #include <cstring>
 #include <vector>
 #include <set>
@@ -106,28 +107,6 @@ void algo0(BuildingVectorType buildingVector, SkylineSetType& outSkylineSet)
           break;
         }
       }
-
-      /*
-      if (sIter->start > bIter->start && !flag)
-      {
-        if (bIter->height > currHeight)
-          outSkylineSet.insert(SkylineElem(bIter->start, bIter->height));
-        flag = true;
-      }
-      else if (bIter->end <= sIter->start && flag)
-      {
-        SkylineSetType::iterator tempIter = sIter;
-        tempIter--;
-        if (bIter->height > tempIter->height)
-          outSkylineSet.insert(SkylineElem(bIter->end, sIter->height));
-        flag = false;
-      }
-      else if (bIter->height > sIter->height && flag)
-      {
-        sIter->height = bIter->height;
-      }
-      currHeight = sIter->height;
-      */
     }
   }
 }
